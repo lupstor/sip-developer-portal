@@ -1,0 +1,56 @@
+name: Deploy to development environment
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-upload-image:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.generate_image_tag.outputs.IMAGE_TAG }}
+      short_sha: ${{ steps.generate_short_sha.outputs.SHORT_SHA }}
+    steps:
+      - name: use node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          registry-url: https://registry.npmjs.org/
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Read version package.json
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Package version: $VERSION"
+          echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Get Short SHA of Last Commit
+        id: generate_short_sha
+        run: |
+          SHORT_SHA=$(git log -1 --format=%h)
+          echo "Short SHA of the last commit: $SHORT_SHA"  
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+          echo "SHORT_SHA=$SHORT_SHA" >> "$GITHUB_OUTPUT"
+      - name: Generate Image TAG
+        id: generate_image_tag
+        run: |
+          IMAGE_TAG="$PACKAGE_VERSION-$SHORT_SHA"
+          echo "Image tag: $IMAGE_TAG"
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+      - name: "Build project"
+        run: |
+          yarn install --frozen-lockfile
+          yarn tsc
+          yarn build:backend
+      - name: "Run unit tests"
+        run: yarn test
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      - name: "Build image and upload it to registry"
+        run: |
+            export DOCKER_BUILDKIT=1
+            docker image build . -f ${GITHUB_WORKSPACE}/packages/backend/Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/sip-developer-portal:$IMAGE_TAG
+            docker push ${{ secrets.DOCKER_HUB_USERNAME }}/sip-developer-portal:$IMAGE_TAG
