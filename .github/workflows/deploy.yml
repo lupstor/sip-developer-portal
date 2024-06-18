@@ -64,7 +64,7 @@ jobs:
       - name: Update k8s values file
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.image.tag = "${{ env.IMAGE_TAG  }}"' 'app-k8s/deployment-qa.yaml'
+          cmd: yq -i '.image.tag = "${{ env.IMAGE_TAG  }}"' '.app-k8s/deployment-qa.yaml'
 
       - name: Commit k8s values files
         run: |
