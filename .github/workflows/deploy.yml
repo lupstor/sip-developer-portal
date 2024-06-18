@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - '.app-k8s/**'
       - '.github/**'
+  workflow_dispatch:
 jobs:
   build-and-upload-image:
     runs-on: ubuntu-latest
@@ -61,18 +62,4 @@ jobs:
             docker image build . -f ${GITHUB_WORKSPACE}/packages/backend/Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/sip-developer-portal:$IMAGE_TAG
             docker push ${{ secrets.DOCKER_HUB_USERNAME }}/sip-developer-portal:$IMAGE_TAG
 
-      - name: Update k8s values file
-        uses: mikefarah/yq@master
-        with:
-          cmd: yq -i '.image.tag = "${{ env.IMAGE_TAG  }}"' '.app-k8s/deployment-qa.yaml'
-
-      - name: Commit k8s values files
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git add '.app-k8s/deployment-qa.yaml'
-          git commit -m "Deploy [${{ env.IMAGE_TAG }}] tag version to DEV"
-
-      - name: Push changes
-        run: git push
 
