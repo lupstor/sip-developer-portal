@@ -68,7 +68,7 @@ jobs:
       - name: Update k8s values file with with image tag to deploy
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers[0].image = "${{ secrets.DOCKER_HUB_USERNAME }}/sip-developer-portal:$IMAGE_TAG"' '.app-k8s/deployment-qa.yaml'
+          cmd: yq -i '.spec.template.spec.containers[0].image = "${{ secrets.DOCKER_HUB_USERNAME }}/sip-developer-portal:${{.env.IMAGE_TAG}}"' '.app-k8s/deployment-qa.yaml'
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
