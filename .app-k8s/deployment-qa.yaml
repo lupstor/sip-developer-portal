@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backstage
-          image: herbergt/sip-developer-portal:1.0.0-b43888e
+          image: herbergt/sip-developer-portal:1.0.0-10fdfb1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
