@@ -1,5 +1,5 @@
 app:
-  title: SIP developer portal - Test
+  title: SIP developer portal
   baseUrl: http://localhost:3000
 
 organization:
@@ -93,5 +93,4 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
-
 
