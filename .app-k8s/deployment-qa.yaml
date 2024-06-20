@@ -31,3 +31,8 @@ spec:
           envFrom:
             - secretRef:
                 name: backstage-secrets
+  image:
+    template:
+      spec:
+        containers:
+          - image: herbergt/sip-developer-portal:$IMAGE_TAG
