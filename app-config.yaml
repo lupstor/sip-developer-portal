@@ -1,5 +1,5 @@
 app:
-  title: SIP developer portal - Demo
+  title: SIP developer portal
   baseUrl: http://localhost:3000
 
 organization:
