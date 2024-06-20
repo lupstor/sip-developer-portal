@@ -31,5 +31,3 @@ spec:
           envFrom:
             - secretRef:
                 name: backstage-secrets
-image:
-  tag: 1.0.0-feab5f3
