@@ -5,7 +5,7 @@ metadata:
   name: backstage
   namespace: devops-tools
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: backstage
@@ -23,7 +23,7 @@ spec:
               containerPort: 7007
           resources:
             requests:
-              memory: "64Mi"
+              memory: "128Mi"
               cpu: "250m"
             limits:
               memory: "1024Mi"
